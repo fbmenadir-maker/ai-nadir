@@ -27,7 +27,7 @@ export default function CameraControls({ imageUrl, onAngleChange }: Props) {
     <Canvas style={{ height: 400 }}>
       <ambientLight intensity={0.8} />
       <directionalLight position={[5, 5, 5]} intensity={1} />
-      <mesh ref={meshRef} position={[0, 0, 0]}>
+      <mesh ref={meshRef}>
         <planeGeometry args={[4, 4]} />
         <meshBasicMaterial map={new THREE.TextureLoader().load(imageUrl)} />
       </mesh>
