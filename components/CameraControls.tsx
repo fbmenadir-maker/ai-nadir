@@ -2,7 +2,7 @@
 
 import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import * as THREE from "three";
 
 interface Props {
@@ -12,15 +12,16 @@ interface Props {
 
 export default function CameraControls({ imageUrl, onAngleChange }: Props) {
   const meshRef = useRef<THREE.Mesh>(null);
-  const [rotation, setRotation] = useState({ yaw: 0, pitch: 0, roll: 0 });
 
   useFrame(({ camera }) => {
-    const euler = new THREE.Euler().setFromQuaternion(camera.quaternion);
-    const yaw = THREE.MathUtils.radToDeg(euler.y);
-    const pitch = THREE.MathUtils.radToDeg(euler.x);
-    const roll = THREE.MathUtils.radToDeg(euler.z);
-    setRotation({ yaw, pitch, roll });
-    if (onAngleChange) onAngleChange({ yaw, pitch, roll });
+    if (onAngleChange) {
+      const euler = new THREE.Euler().setFromQuaternion(camera.quaternion);
+      onAngleChange({
+        yaw: THREE.MathUtils.radToDeg(euler.y),
+        pitch: THREE.MathUtils.radToDeg(euler.x),
+        roll: THREE.MathUtils.radToDeg(euler.z)
+      });
+    }
   });
 
   return (
