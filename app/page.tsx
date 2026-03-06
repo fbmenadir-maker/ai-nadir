@@ -1,22 +1,16 @@
-const generateImage = async () => {
-  if (!image) return;
-  setLoading(true);
-  try {
-    const res = await fetch("/api/generate", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        prompt: "Generate new image from uploaded image",
-        imageUrl: image,
-        angles,
-      }),
-    });
-    const data = await res.json();
-    if (data.generatedImage) setImage(data.generatedImage);
-  } catch (err) {
-    console.error(err);
-    alert("حدث خطأ أثناء توليد الصورة!");
-  } finally {
-    setLoading(false);
-  }
-};
+"use client";
+import { useState } from "react";
+import CameraControls from "../components/CameraControls";
+import "./globals.css";
+
+export default function Home() {
+  const [image, setImage] = useState<string | null>(null);
+  const [angles, setAngles] = useState({ yaw: 0, pitch: 0, roll: 0 });
+
+  return (
+    <div>
+      <h1>FBM Enadir Maker</h1>
+      {/* باقي الكود كما هو */}
+    </div>
+  );
+}
