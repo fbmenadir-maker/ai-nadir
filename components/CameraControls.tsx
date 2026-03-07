@@ -1,38 +1,76 @@
 "use client";
 
-import { Canvas, useFrame } from "@react-three/fiber";
-import { OrbitControls } from "@react-three/drei";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import * as THREE from "three";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
-interface Props {
-  imageUrl: string;
-  onAngleChange?: (angles: { yaw: number; pitch: number; roll: number }) => void;
-}
+type Props = {
+  image: string | null;
+  onAngleChange: (angles: { yaw: number; pitch: number; roll: number }) => void;
+};
 
-export default function CameraControls({ imageUrl, onAngleChange }: Props) {
-  const meshRef = useRef<THREE.Mesh>(null);
+export default function CameraControls({ image, onAngleChange }: Props) {
+  const mountRef = useRef<HTMLDivElement>(null);
 
-  useFrame(({ camera }) => {
-    if (onAngleChange) {
-      const euler = new THREE.Euler().setFromQuaternion(camera.quaternion);
-      onAngleChange({
-        yaw: THREE.MathUtils.radToDeg(euler.y),
-        pitch: THREE.MathUtils.radToDeg(euler.x),
-        roll: THREE.MathUtils.radToDeg(euler.z)
+  useEffect(() => {
+    if (!mountRef.current) return;
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(
+      75,
+      600 / 400,
+      0.1,
+      1000
+    );
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(600, 400);
+    mountRef.current.appendChild(renderer.domElement);
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+
+    camera.position.z = 2;
+
+    let mesh: THREE.Mesh | null = null;
+
+    if (image) {
+      const textureLoader = new THREE.TextureLoader();
+      const texture = textureLoader.load(image);
+
+      const geometry = new THREE.PlaneGeometry(2, 2);
+      const material = new THREE.MeshBasicMaterial({
+        map: texture,
       });
-    }
-  });
 
-  return (
-    <Canvas style={{ height: 400 }}>
-      <ambientLight intensity={0.8} />
-      <directionalLight position={[5, 5, 5]} intensity={1} />
-      <mesh ref={meshRef}>
-        <planeGeometry args={[4, 4]} />
-        <meshBasicMaterial map={new THREE.TextureLoader().load(imageUrl)} />
-      </mesh>
-      <OrbitControls enablePan={false} enableZoom={false} />
-    </Canvas>
-  );
+      mesh = new THREE.Mesh(geometry, material);
+      scene.add(mesh);
+    }
+
+    const animate = () => {
+      requestAnimationFrame(animate);
+
+      const yaw = camera.rotation.y;
+      const pitch = camera.rotation.x;
+      const roll = camera.rotation.z;
+
+      onAngleChange({
+        yaw,
+        pitch,
+        roll,
+      });
+
+      renderer.render(scene, camera);
+    };
+
+    animate();
+
+    return () => {
+      renderer.dispose();
+      if (mountRef.current) {
+        mountRef.current.innerHTML = "";
+      }
+    };
+  }, [image]);
+
+  return <div ref={mountRef}></div>;
 }
