@@ -1,30 +1,36 @@
 "use client";
 
-import { useState } from "react";
+import React, { useEffect } from "react";
 
-export default function CameraControls() {
+interface CameraControlsProps {
+  imageUrl: string;
+  onAngleChange: (angle: number) => void;
+}
 
-  const [angle, setAngle] = useState(0);
+export default function CameraControls({ imageUrl, onAngleChange }: CameraControlsProps) {
 
-  const rotateLeft = () => {
-    setAngle(angle - 45);
-  };
-
-  const rotateRight = () => {
-    setAngle(angle + 45);
-  };
-
-  const reset = () => {
-    setAngle(0);
-  };
+  useEffect(() => {
+    onAngleChange(0);
+  }, []);
 
   return (
-    <div className="controls">
-      <button onClick={rotateLeft}>Rotate Left</button>
-      <button onClick={rotateRight}>Rotate Right</button>
-      <button onClick={reset}>Reset</button>
+    <div style={{ textAlign: "center" }}>
+      <img
+        src={imageUrl}
+        alt="preview"
+        style={{
+          width: "100%",
+          maxWidth: "500px",
+          borderRadius: "10px"
+        }}
+      />
 
-      <p>Angle: {angle}°</p>
+      <div style={{ marginTop: "20px" }}>
+        <button onClick={() => onAngleChange(-45)}>Rotate Left</button>
+        <button onClick={() => onAngleChange(45)} style={{ marginLeft: "10px" }}>
+          Rotate Right
+        </button>
+      </div>
     </div>
   );
 }
