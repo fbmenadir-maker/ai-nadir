@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import CameraControls from "../components/CameraControls";
+import CameraControls from "./components/CameraControls";
 import "./globals.css";
 
 export default function Home() {
