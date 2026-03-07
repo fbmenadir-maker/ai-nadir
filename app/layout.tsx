@@ -1,8 +1,6 @@
-import "./globals.css";
-
 export const metadata = {
-  title: "AI Nadir Maker",
-  description: "توليد الصور ثلاثية الأبعاد والتحكم بالزوايا",
+  title: "AI Nadir",
+  description: "AI camera angle tool",
 };
 
 export default function RootLayout({
