@@ -67,7 +67,7 @@ export default function Home() {
 
       {image && (
         <div id="camera-container">
-          <CameraControls imageUrl={image} onAngleChange={(a) => setAngles(a)} />
+          <CameraControls imageUrl={image} onAngleChange={(a) => setAngles({ yaw: a, pitch: 0, roll: 0 })} />
         </div>
       )}
 
